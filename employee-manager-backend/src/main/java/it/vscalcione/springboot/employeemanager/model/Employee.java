@@ -1,63 +1,118 @@
-package it.vscalcione.springboot.crudappbackend.model;
+package it.vscalcione.springboot.employeemanager.model;
 
-import javax.persistence.*;
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "employees")
-public class Employee {
+public class Employee implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(nullable = false, updatable = false)
+	private Long id;
+	
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String jobTitle;
+	private String phone;
+	private String imageUrl;
+	
+	@Column(nullable = false, updatable = false)
+	private String employeeCode;
 
-    @Column(name = "first_name")
-    private String firstName;
+	public Employee() {
+	}
 
-    @Column(name = "last_name")
-    private String lastName;
+	public Employee(Long id, String firstName, String lastName, String email, String jobTitle, String phone,
+			String imageUrl, String employeeCode) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.jobTitle = jobTitle;
+		this.phone = phone;
+		this.imageUrl = imageUrl;
+		this.employeeCode = employeeCode;
+	}
 
-    @Column(name = "email")
-    private String email;
+	public Long getId() {
+		return id;
+	}
 
-    public Employee() {
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Employee(long id, String firstName, String lastName, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public long getId() {
-        return id;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public String getJobTitle() {
+		return jobTitle;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getEmployeeCode() {
+		return employeeCode;
+	}
+
+	public void setEmployeeCode(String employeeCode) {
+		this.employeeCode = employeeCode;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", jobTitle=" + jobTitle + ", phone=" + phone + ", imageUrl=" + imageUrl + ", employeeCode="
+				+ employeeCode + "]";
+	}
+	
 }

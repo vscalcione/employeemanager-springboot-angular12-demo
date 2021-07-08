@@ -1,63 +1,61 @@
-package it.vscalcione.springboot.crudappbackend.controller;
+package it.vscalcione.springboot.employeemanager.controller;
 
-import it.vscalcione.springboot.crudappbackend.exception.ResourceNotFoundException;
-import it.vscalcione.springboot.crudappbackend.model.Employee;
-import it.vscalcione.springboot.crudappbackend.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import it.vscalcione.springboot.employeemanager.model.Employee;
+import it.vscalcione.springboot.employeemanager.service.EmployeeService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
+@RequestMapping("/employee")
 public class EmployeeController {
+	
+	@Autowired
+	private final EmployeeService employeeService;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+	public EmployeeController(EmployeeService employeeService) {
+		this.employeeService = employeeService;
+	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<List<Employee>> getAllEmployees() {
+		List<Employee> employees = employeeService.findAllEmployees();
+		return new ResponseEntity<>(employees, HttpStatus.OK);
+	}
+	
+	@GetMapping("/find/{id}")
+	public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long id) {
+		Employee employee = employeeService.findEmployeeById(id);
+		return new ResponseEntity<>(employee, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add")
+	public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
+		Employee newEmployee = employeeService.addEmployee(employee);
+		return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
+	}
 
-    @GetMapping("/employees")
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
-    }
-
-    @PostMapping("/employees")
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeRepository.save(employee);
-    }
-
-    @GetMapping("/employees/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
-        return ResponseEntity.ok(employee);
-    }
-
-    @PutMapping("/employees/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
-
-        employee.setFirstName(employeeDetails.getFirstName());
-        employee.setLastName(employeeDetails.getLastName());
-        employee.setEmail(employeeDetails.getEmail());
-
-        Employee updatedEmployee = employeeRepository.save(employee);
-
-        return ResponseEntity.ok(updatedEmployee);
-    }
-
-    @DeleteMapping("/employees/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
-
-        employeeRepository.delete(employee);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return ResponseEntity.ok(response);
-    }
+	@PutMapping("/add")
+	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
+		Employee updatedEmployee = employeeService.updateEmployee(employee);
+		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
+		employeeService.deleteEmployee(id);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 }
